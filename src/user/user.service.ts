@@ -10,6 +10,7 @@ export class UserService {
     const newUser = {
       ...new RegisterUserDto(user.email, user.logIn, user.password),
       id: userId,
+      cars: [],
     };
     this.users.push(newUser);
     return userId;
@@ -29,7 +30,7 @@ export class UserService {
     const [_, index] = this.findUser(id);
     this.users.splice(index, 1);
   }
-  private findUser(id: string): [IUser, number] {
+  findUser(id: string): [IUser, number] {
     const userIndex = this.users.findIndex((user) => user.id === id);
     const user = this.users[userIndex];
     if (!user) throw new NotFoundException('could not find user');
