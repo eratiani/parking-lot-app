@@ -7,7 +7,10 @@ export class UserService {
   users: IUser[] = [];
   addUser(user: RegisterUserDto) {
     const userId = uuidv4();
-    const newUser = { ...user, id: userId };
+    const newUser = {
+      ...new RegisterUserDto(user.email, user.logIn, user.password),
+      id: userId,
+    };
     this.users.push(newUser);
     return userId;
   }

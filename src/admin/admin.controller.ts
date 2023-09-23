@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,10 +8,10 @@ import {
   Param,
   Patch,
   Post,
-  ValidationPipe,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { RegisterAdminDto, IAdmin } from './adminDto';
+import { throwCustomError } from 'src/utility/custom.error';
 
 @Controller('admin')
 export class AdminController {
@@ -18,6 +19,9 @@ export class AdminController {
   @Post()
   @HttpCode(201)
   createUser(@Body() body: RegisterAdminDto) {
+    throwCustomError(body, 'logIn', 'string');
+    throwCustomError(body, 'password', 'string');
+    throwCustomError(body, 'email', 'string');
     this.adminService.registerAdmin(body);
   }
   @Get()
@@ -30,8 +34,15 @@ export class AdminController {
   }
   @Patch(':id')
   @HttpCode(204)
-  updateUser(@Param('id') id: string, @Body(ValidationPipe) Body: IAdmin) {
-    this.adminService.updateAdmin(id, Body);
+  updateUser(@Param('id') id: string, @Body() body: IAdmin) {
+    throwCustomError(body, 'logIn', 'string');
+    throwCustomError(body, 'password', 'string');
+    throwCustomError(body, 'email', 'string');
+
+    if (!id || typeof id !== 'string') {
+      throw new BadRequestException('Invalid request id');
+    }
+    this.adminService.updateAdmin(id, body);
     return null;
   }
   @Delete(':id')
