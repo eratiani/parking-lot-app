@@ -12,6 +12,7 @@ import {
 import { AdminService } from './admin.service';
 import { RegisterAdminDto, IAdmin } from './adminDto';
 import { throwCustomError } from 'src/utility/custom.error';
+import { checkAllowedFields } from 'src/utility/allowed-fields.error';
 
 @Controller('admin')
 export class AdminController {
@@ -22,6 +23,7 @@ export class AdminController {
     throwCustomError(body, 'logIn', 'string');
     throwCustomError(body, 'password', 'string');
     throwCustomError(body, 'email', 'string');
+    checkAllowedFields(['logIn', 'password', 'email'], body);
     this.adminService.registerAdmin(body);
   }
   @Get()
@@ -38,7 +40,7 @@ export class AdminController {
     throwCustomError(body, 'logIn', 'string');
     throwCustomError(body, 'password', 'string');
     throwCustomError(body, 'email', 'string');
-
+    checkAllowedFields(['logIn', 'password', 'email', 'id'], body);
     if (!id || typeof id !== 'string') {
       throw new BadRequestException('Invalid request id');
     }

@@ -11,6 +11,7 @@ import {
 import { IUser, RegisterUserDto } from './userDto';
 import { UserService } from './user.service';
 import { throwCustomError } from 'src/utility/custom.error';
+import { checkAllowedFields } from 'src/utility/allowed-fields.error';
 
 @Controller('user')
 export class UserController {
@@ -20,6 +21,7 @@ export class UserController {
     throwCustomError(body, 'logIn', 'string');
     throwCustomError(body, 'password', 'string');
     throwCustomError(body, 'email', 'string');
+    checkAllowedFields(['logIn', 'password', 'email'], body);
     this.userService.addUser(body);
   }
   @Get()
@@ -38,6 +40,10 @@ export class UserController {
     throwCustomError(body, 'logIn', 'string');
     throwCustomError(body, 'password', 'string');
     throwCustomError(body, 'email', 'string');
+    checkAllowedFields(
+      ['logIn', 'password', 'email', 'cars', 'balance', 'id'],
+      body,
+    );
     if (!id || typeof id !== 'string') {
       throw new BadRequestException('Invalid request id');
     }

@@ -13,6 +13,7 @@ import { UserService } from 'src/user/user.service';
 import { CarService } from './car.service';
 import { CreateCarDto, ICar } from './carDto';
 import { throwCustomError } from 'src/utility/custom.error';
+import { checkAllowedFields } from 'src/utility/allowed-fields.error';
 
 @Controller('user/:userId/cars')
 export class CarController extends UserController {
@@ -28,6 +29,7 @@ export class CarController extends UserController {
     throwCustomError(body, 'carModel', 'string');
     throwCustomError(body, 'carNumber', 'string');
     throwCustomError(body, 'carType', 'string');
+    checkAllowedFields(['carModel', 'carNumber', 'carType'], body);
     this.carService.addCar(userId, body);
   }
   @Get()
@@ -50,6 +52,7 @@ export class CarController extends UserController {
     throwCustomError(body, 'carModel', 'string');
     throwCustomError(body, 'carNumber', 'string');
     throwCustomError(body, 'carType', 'string');
+    checkAllowedFields(['carModel', 'carNumber', 'carType', 'carId'], body);
     if (!carId || typeof carId !== 'string') {
       throw new BadRequestException('Invalid request id');
     }
