@@ -9,7 +9,7 @@ export class CarService {
   addCar(userId: string, car: CreateCarDto) {
     const user = this.userService.findUser(userId)[0];
     const carId = uuidv4();
-    const newCar = { ...car, carId: carId };
+    const newCar = { ...car, carId: carId, userId: userId };
     user.cars.push(newCar);
     return carId;
   }

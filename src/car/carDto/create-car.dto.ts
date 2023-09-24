@@ -5,5 +5,6 @@ export class CreateCarDto implements IAddCar {
     public carModel: string,
     public carNumber: string,
     public carType: string,
+    public userId: string,
   ) {}
 }

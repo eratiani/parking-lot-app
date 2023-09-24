@@ -1,8 +1,8 @@
-import { ICar } from 'src/car/carDto';
+import { checkedInCar, checkedOutCar } from 'src/car/carDto/car.interface';
 
 export interface IParkingHistory {
-  currParkingHistory: ICar[];
-  expiredParkingHistory: ICar[];
+  currParkingHistory: checkedInCar[];
+  expiredParkingHistory: checkedOutCar[];
 }
 export interface ICreateParkingLot {
   lotName: string;
