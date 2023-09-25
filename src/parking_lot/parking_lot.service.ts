@@ -6,10 +6,16 @@ import {
 import { CreateParkingLotDto, Iparking } from './parking_lotDto';
 import { v4 as uuidv4 } from 'uuid';
 import { ICar } from 'src/car/carDto';
-import { checkedInCar } from 'src/car/carDto/car.interface';
+import { checkedInCar, checkedOutCar } from 'src/car/carDto/car.interface';
+import { UserHistoryService } from 'src/user-history/user-history.service';
+import { UserBalanceService } from 'src/user-balance/user-balance.service';
 
 @Injectable()
 export class ParkingLotService {
+  constructor(
+    public readonly userHistoryService: UserHistoryService,
+    public readonly userBalanceService: UserBalanceService,
+  ) {}
   parkingLots: Iparking[] = [];
   addParkingLot(parkingLot: CreateParkingLotDto) {
     const parkingLotId = uuidv4();
@@ -65,7 +71,11 @@ export class ParkingLotService {
     lot.parkingHistory.currParkingHistory.push(car);
     return car.carId;
   }
-  removeCarFromLot(lotId: string, carId: string, date: Date) {
+  removeCarFromLot(
+    lotId: string,
+    carId: string,
+    date: Date,
+  ): [checkedOutCar, number] {
     const [lot, _] = this.findParkingLot(lotId);
     console.log(lot);
     const [car, carIndex] = this.findCarInLot(lot, carId);
@@ -86,12 +96,17 @@ export class ParkingLotService {
   checkIn(car: ICar, lotId: string) {
     const currDate = new Date();
     const newCar = { ...car, checkInTime: currDate };
+    /// either front executes this or straight from api
     this.addCarToLot(newCar, lotId);
+    return [newCar, lotId];
   }
-  checkOut(lotId: string, carId: string) {
+  checkOut(lotId: string, carId: string): [checkedOutCar, number] {
     const checklOutDate = new Date();
     const [car, fee] = this.removeCarFromLot(lotId, carId, checklOutDate);
-    ////implement later add car too history, subtract fee from user
+    /// either front executes this or straight from api
+    this.userHistoryService.addHistory(car, carId);
+    this.userBalanceService.subtractFromBalance(car.userId, car.fee);
+    return [car, fee];
   }
   calculateFee(enterDate: Date, leaveDate: Date, feeMulty: number): number {
     const fee =
