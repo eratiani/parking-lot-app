@@ -8,9 +8,10 @@ import { CarModule } from './car/car.module';
 import { ParkingLotModule } from './parking_lot/parking_lot.module';
 import { UserBalanceModule } from './user-balance/user-balance.module';
 import { UserHistoryModule } from './user-history/user-history.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [UserModule, AuthModule, AdminModule, CarModule, ParkingLotModule, UserBalanceModule, UserHistoryModule],
+  imports: [UserModule, AuthModule, AdminModule, CarModule, ParkingLotModule, UserBalanceModule, UserHistoryModule, PrismaModule],
   controllers: [AppController],
   providers: [AppService],
 })

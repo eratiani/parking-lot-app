@@ -19,12 +19,8 @@ export class AdminController {
   constructor(public readonly adminService: AdminService) {}
   @Post()
   @HttpCode(201)
-  createUser(@Body() body: RegisterAdminDto) {
-    throwCustomError(body, 'logIn', 'string');
-    throwCustomError(body, 'password', 'string');
-    throwCustomError(body, 'email', 'string');
-    checkAllowedFields(['logIn', 'password', 'email'], body);
-    this.adminService.registerAdmin(body);
+  async createUser(@Body() body: RegisterAdminDto) {
+    await this.adminService.registerAdmin(body);
   }
   @Get()
   getUsers() {
@@ -36,21 +32,14 @@ export class AdminController {
   }
   @Patch(':id')
   @HttpCode(204)
-  updateUser(@Param('id') id: string, @Body() body: IAdmin) {
-    throwCustomError(body, 'logIn', 'string');
-    throwCustomError(body, 'password', 'string');
-    throwCustomError(body, 'email', 'string');
-    checkAllowedFields(['logIn', 'password', 'email', 'id'], body);
-    if (!id || typeof id !== 'string') {
-      throw new BadRequestException('Invalid request id');
-    }
-    this.adminService.updateAdmin(id, body);
+  async updateUser(@Param('id') id: string, @Body() body: IAdmin) {
+    await this.adminService.updateAdmin(id, body);
     return null;
   }
   @Delete(':id')
   @HttpCode(204)
-  deleteUser(@Param('id') id: string) {
-    this.adminService.deleteAdmin(id);
+  async deleteUser(@Param('id') id: string) {
+    await this.adminService.deleteAdmin(id);
     return null;
   }
 }
