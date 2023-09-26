@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { RegisterAdminDto, IAdmin } from './adminDto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -18,12 +18,11 @@ export class AdminService {
   }
 
   async getAdmin(id: string): Promise<IAdmin | null> {
-    return await this.prisma.admin.findUnique({
-      where: { id },
-    });
+    return this.getAdminById(id);
   }
 
   async updateAdmin(id: string, newAdmin: RegisterAdminDto): Promise<void> {
+    this.getAdminById(id);
     await this.prisma.admin.update({
       where: { id },
       data: newAdmin,
@@ -31,8 +30,18 @@ export class AdminService {
   }
 
   async deleteAdmin(id: string): Promise<void> {
+    this.getAdminById(id);
     await this.prisma.admin.delete({
       where: { id },
     });
+  }
+  private async getAdminById(id: string): Promise<IAdmin | null> {
+    const admin = await this.prisma.admin.findUnique({
+      where: { id },
+    });
+    if (admin === null) {
+      throw new NotFoundException('Admin not found');
+    }
+    return admin;
   }
 }

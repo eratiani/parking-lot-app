@@ -5,6 +5,8 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -20,7 +22,20 @@ export class AdminController {
   @Post()
   @HttpCode(201)
   async createUser(@Body() body: RegisterAdminDto) {
-    await this.adminService.registerAdmin(body);
+    throwCustomError(body, 'logIn', 'string');
+    throwCustomError(body, 'password', 'string');
+    throwCustomError(body, 'email', 'string');
+    checkAllowedFields(['logIn', 'password', 'email'], body);
+    try {
+      const adminId = await this.adminService.registerAdmin(body);
+      return { message: 'Admin created successfully', adminId };
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
+      } else {
+        throw error;
+      }
+    }
   }
   @Get()
   getUsers() {
@@ -33,7 +48,20 @@ export class AdminController {
   @Patch(':id')
   @HttpCode(204)
   async updateUser(@Param('id') id: string, @Body() body: IAdmin) {
-    await this.adminService.updateAdmin(id, body);
+    throwCustomError(body, 'logIn', 'string');
+    throwCustomError(body, 'password', 'string');
+    throwCustomError(body, 'email', 'string');
+    checkAllowedFields(['logIn', 'password', 'email'], body);
+    try {
+      await this.adminService.updateAdmin(id, body);
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
+      } else {
+        throw error;
+      }
+    }
+
     return null;
   }
   @Delete(':id')
