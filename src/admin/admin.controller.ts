@@ -38,12 +38,16 @@ export class AdminController {
     }
   }
   @Get()
-  getUsers() {
-    return this.adminService.getAdmins();
+  async getUsers() {
+    return await this.adminService.getAdmins();
   }
   @Get(':id')
-  getUser(@Param('id') id: string) {
-    return this.adminService.getAdmin(id);
+  async getUser(@Param('id') id: string) {
+    try {
+      return await this.adminService.getAdmin(id);
+    } catch (error) {
+      throw new HttpException('admin not found', HttpStatus.NOT_FOUND);
+    }
   }
   @Patch(':id')
   @HttpCode(204)
@@ -67,7 +71,11 @@ export class AdminController {
   @Delete(':id')
   @HttpCode(204)
   async deleteUser(@Param('id') id: string) {
-    await this.adminService.deleteAdmin(id);
+    try {
+      await this.adminService.deleteAdmin(id);
+    } catch (error) {
+      throw new HttpException('admin not found', HttpStatus.NOT_FOUND);
+    }
     return null;
   }
 }

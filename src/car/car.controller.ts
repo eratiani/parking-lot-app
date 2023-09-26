@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -25,28 +27,40 @@ export class CarController extends UserController {
   }
 
   @Post()
-  addCar(@Body() body: CreateCarDto, @Param('userId') userId: string) {
+  async addCar(@Body() body: CreateCarDto, @Param('userId') userId: string) {
     throwCustomError(body, 'carModel', 'string');
     throwCustomError(body, 'carNumber', 'string');
     throwCustomError(body, 'carType', 'string');
     checkAllowedFields(['carModel', 'carNumber', 'carType'], body);
-    this.carService.addCar(userId, body);
+    try {
+      await this.carService.addCar(userId, body);
+    } catch (error) {
+      throw error;
+    }
   }
   @Get()
-  getCars(@Param('userId') userId: string) {
-    return this.carService.getCars(userId);
+  async getCars(@Param('userId') userId: string) {
+    try {
+      return await this.carService.getCars(userId);
+    } catch (error) {
+      throw error;
+    }
   }
   @Get(':carId')
-  getCar(@Param('carId') carId: string, @Param('userId') userId: string) {
+  async getCar(@Param('carId') carId: string) {
     if (!carId || typeof carId !== 'string') {
       throw new BadRequestException('Invalid request id');
     }
-    return this.carService.getCar(userId, carId);
+    try {
+      return await this.carService.getCar(carId);
+    } catch (error) {
+      throw new HttpException('car does not exist', HttpStatus.NOT_FOUND);
+    }
   }
   @Patch(':carId')
-  updateCar(
+  async updateCar(
     @Param('carId') carId: string,
-    @Param('userId') userId: string,
+
     @Body() body: ICar,
   ) {
     throwCustomError(body, 'carModel', 'string');
@@ -56,15 +70,26 @@ export class CarController extends UserController {
     if (!carId || typeof carId !== 'string') {
       throw new BadRequestException('Invalid request id');
     }
-    this.carService.updateCar(userId, carId, body);
+    try {
+      await this.carService.updateCar(carId, body);
+    } catch (error) {
+      throw new HttpException('car does not exist', HttpStatus.NOT_FOUND);
+    }
     return null;
   }
   @Delete(':carId')
-  deleteCar(@Param('carId') carId: string, @Param('userId') userId: string) {
+  async deleteCar(
+    @Param('carId') carId: string,
+    @Param('userId') userId: string,
+  ) {
     if (!carId || typeof carId !== 'string') {
       throw new BadRequestException('Invalid request id');
     }
-    this.carService.deleteCar(userId, carId);
+    try {
+      await this.carService.deleteCar(userId, carId);
+    } catch (error) {
+      throw new HttpException('car does not exist', HttpStatus.NOT_FOUND);
+    }
     return null;
   }
 }

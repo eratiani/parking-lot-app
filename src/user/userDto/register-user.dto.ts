@@ -1,14 +1,18 @@
+import { ICar } from 'src/car/carDto';
+
 export class RegisterUserDto implements IRegisterUser {
   constructor(
     public logIn: string,
     public password: string,
     public email: string,
-    public balance: number = 100,
+
+    public cars: ICar[] = [],
   ) {}
 }
 interface IRegisterUser {
   logIn: string;
   password: string;
   email: string;
-  balance?: number;
+
+  cars?: ICar[];
 }

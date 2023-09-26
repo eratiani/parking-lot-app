@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -17,26 +19,38 @@ import { checkAllowedFields } from 'src/utility/allowed-fields.error';
 export class UserController {
   constructor(public readonly userService: UserService) {}
   @Post()
-  createUser(@Body() body: RegisterUserDto) {
+  async createUser(@Body() body: RegisterUserDto) {
     throwCustomError(body, 'logIn', 'string');
     throwCustomError(body, 'password', 'string');
     throwCustomError(body, 'email', 'string');
     checkAllowedFields(['logIn', 'password', 'email'], body);
-    this.userService.addUser(body);
+    try {
+      return await this.userService.registerUser(body);
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
+      } else {
+        throw error;
+      }
+    }
   }
   @Get()
-  getUsers() {
-    return this.userService.getUsers();
+  async getUsers() {
+    return await this.userService.getUsers();
   }
   @Get(':id')
-  getUser(@Param('id') id: string) {
+  async getUser(@Param('id') id: string) {
     if (!id || typeof id !== 'string') {
       throw new BadRequestException('Invalid request id');
     }
-    return this.userService.getUser(id);
+    try {
+      return await this.userService.getUser(id);
+    } catch (error) {
+      throw new HttpException('user does not exist', HttpStatus.NOT_FOUND);
+    }
   }
   @Patch(':id')
-  updateUser(@Param('id') id: string, @Body() body: IUser) {
+  async updateUser(@Param('id') id: string, @Body() body: RegisterUserDto) {
     throwCustomError(body, 'logIn', 'string');
     throwCustomError(body, 'password', 'string');
     throwCustomError(body, 'email', 'string');
@@ -47,15 +61,28 @@ export class UserController {
     if (!id || typeof id !== 'string') {
       throw new BadRequestException('Invalid request id');
     }
-    this.userService.updateUser(id, body);
+    try {
+      await this.userService.updateUser(id, body);
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
+      } else {
+        throw new HttpException('user does not exist', HttpStatus.NOT_FOUND);
+      }
+    }
+
     return null;
   }
   @Delete(':id')
-  deleteUser(@Param('id') id: string) {
+  async deleteUser(@Param('id') id: string) {
     if (!id || typeof id !== 'string') {
       throw new BadRequestException('Invalid request id');
     }
-    this.userService.deleteUser(id);
+    try {
+      await this.userService.deleteUser(id);
+    } catch (error) {
+      throw new HttpException('user does not exist', HttpStatus.NOT_FOUND);
+    }
     return null;
   }
 }

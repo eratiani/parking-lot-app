@@ -5,6 +5,6 @@ export interface IUser {
   logIn: string;
   password: string;
   email: string;
-  balance: number;
-  cars: ICar[];
+
+  cars?: ICar[];
 }

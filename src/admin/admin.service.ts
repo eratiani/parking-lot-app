@@ -18,22 +18,34 @@ export class AdminService {
   }
 
   async getAdmin(id: string): Promise<IAdmin | null> {
-    return this.getAdminById(id);
+    try {
+      return await this.getAdminById(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async updateAdmin(id: string, newAdmin: RegisterAdminDto): Promise<void> {
-    this.getAdminById(id);
-    await this.prisma.admin.update({
-      where: { id },
-      data: newAdmin,
-    });
+    try {
+      await this.getAdminById(id);
+      await this.prisma.admin.update({
+        where: { id },
+        data: newAdmin,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async deleteAdmin(id: string): Promise<void> {
-    this.getAdminById(id);
-    await this.prisma.admin.delete({
-      where: { id },
-    });
+    try {
+      await this.getAdminById(id);
+      await this.prisma.admin.delete({
+        where: { id },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
   private async getAdminById(id: string): Promise<IAdmin | null> {
     const admin = await this.prisma.admin.findUnique({

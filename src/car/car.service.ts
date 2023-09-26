@@ -1,36 +1,67 @@
-import { Injectable } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
 import { CreateCarDto, ICar } from './carDto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CarService {
-  constructor(public readonly userService: UserService) {}
-  addCar(userId: string, car: CreateCarDto) {
-    const user = this.userService.findUser(userId)[0];
-    const carId = uuidv4();
-    const newCar = { ...car, carId: carId, userId: userId };
-    user.cars.push(newCar);
-    return carId;
+  constructor(private readonly prisma: PrismaService) {}
+
+  async addCar(userId: string, car: CreateCarDto) {
+    return await this.prisma.car.create({
+      data: {
+        carModel: car.carModel,
+        carNumber: car.carNumber,
+        carType: car.carType,
+        userId: userId,
+      },
+    });
   }
-  getCars(userId: string) {
-    return [...this.userService.getUser(userId).cars];
+
+  async getCars(userId: string) {
+    return await this.prisma.car.findMany({
+      where: {
+        userId: userId,
+      },
+    });
   }
-  getCar(userId: string, carId: string) {
-    const [cars, index] = this.findCars(userId, carId);
-    return cars[index];
+
+  async getCar(carId: string) {
+    const car = await this.prisma.car.findUnique({
+      where: {
+        carId: carId,
+      },
+    });
+    if (car === null) {
+      throw new NotFoundException('Car not found');
+    }
+    return car;
   }
-  updateCar(userId: string, CarId: string, body: ICar) {
-    const [cars, index] = this.findCars(userId, CarId);
-    cars[index] = { ...cars[index], ...body };
+
+  async updateCar(carId: string, body: ICar) {
+    const car = await this.prisma.car.update({
+      where: {
+        carId: carId,
+      },
+      data: {
+        carModel: body.carModel,
+        carNumber: body.carNumber,
+        carType: body.carType,
+      },
+    });
+    if (!car) {
+      throw new NotFoundException('Car not found');
+    }
   }
-  deleteCar(userId: string, carId: string) {
-    const [cars, index] = this.findCars(userId, carId);
-    cars.splice(index, 1);
-  }
-  private findCars(userId: string, carId: string): [ICar[], number] {
-    const user = this.userService.findUser(userId)[0];
-    const carIndex = user.cars.findIndex((car) => car.carId === carId);
-    return [user.cars, carIndex];
+
+  async deleteCar(userId: string, carId: string) {
+    const car = await this.prisma.car.delete({
+      where: {
+        carId: carId,
+      },
+    });
+    if (!car) {
+      throw new NotFoundException('Car not found');
+    }
   }
 }

@@ -15,3 +15,22 @@ model Admin {
   password  String
   email String   @unique
 }
+model User {
+  id    String   @id @default(uuid())
+  logIn    String
+  password String
+  email    String @unique
+
+  cars     Car[]    @relation("UserCars")
+}
+
+model Car {
+  carId     String   @id @default(uuid())
+  carModel  String
+  carNumber String
+  carType   String
+  userId    String  
+
+  user      User @relation("UserCars", fields: [userId], references: [id])
+}
+

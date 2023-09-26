@@ -1,39 +1,75 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 import { IUser, RegisterUserDto } from './userDto';
+import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class UserService {
-  // constructor(public readonly db:dbService) {}
-  users: IUser[] = [];
-  addUser(user: RegisterUserDto) {
-    const userId = uuidv4();
-    const newUser = {
-      ...new RegisterUserDto(user.email, user.logIn, user.password),
-      id: userId,
-      cars: [],
-    };
-    this.users.push(newUser);
-    return userId;
+  constructor(private prisma: PrismaService) {}
+
+  async registerUser(user: RegisterUserDto): Promise<string> {
+    const newUser = await this.prisma.user.create({
+      data: {
+        logIn: user.logIn,
+        password: user.password,
+        email: user.email,
+
+        cars: {
+          create: user.cars,
+        },
+      },
+    });
+
+    return newUser.id;
   }
-  getUsers() {
-    return [...this.users];
+
+  async getUsers(): Promise<IUser[]> {
+    return await this.prisma.user.findMany();
   }
-  getUser(id: string) {
-    const user = this.findUser(id)[0];
-    return { ...user };
+
+  async getUser(id: string): Promise<IUser | null> {
+    try {
+      return await this.getUserById(id);
+    } catch (error) {
+      throw new NotFoundException('User not found');
+    }
   }
-  updateUser(id: string, body: IUser) {
-    const [user, index] = this.findUser(id);
-    this.users[index] = { ...user, ...body };
+
+  async updateUser(id: string, newUser: RegisterUserDto): Promise<void> {
+    try {
+      await this.getUserById(id);
+      await this.prisma.user.update({
+        where: { id },
+        data: {
+          logIn: newUser.logIn,
+          password: newUser.password,
+          email: newUser.email,
+
+          cars: {
+            create: newUser.cars,
+          },
+        },
+      });
+    } catch (error) {
+      throw new NotFoundException('User not found');
+    }
   }
-  deleteUser(id: string) {
-    const [_, index] = this.findUser(id);
-    this.users.splice(index, 1);
+
+  async deleteUser(id: string): Promise<void> {
+    try {
+      await this.getUserById(id);
+      await this.prisma.user.delete({
+        where: { id },
+      });
+    } catch (error) {
+      throw new NotFoundException('User not found');
+    }
   }
-  findUser(id: string): [IUser, number] {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-    const user = this.users[userIndex];
-    if (!user) throw new NotFoundException('could not find user');
-    return [user, userIndex];
+  private async getUserById(id: string): Promise<IUser | null> {
+    const User = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (!User) {
+      throw new NotFoundException('User not found');
+    }
+    return User;
   }
 }
