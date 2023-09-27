@@ -1,13 +1,10 @@
-import { IParkingHistory, ICreateParkingLot } from './parking.interface';
+import { ICarParked } from './parking-history.interface';
+import { IParkingHistory } from './parking.interface';
 
-export class CreateParkingLotDto implements ICreateParkingLot {
+export class CreateParkingLotDto {
   constructor(
     public lotName: string,
-    public lotAdress: string,
+    public lotAddress: string,
     public parkingPrice: number,
-    public parkingHistory: IParkingHistory = {
-      currParkingHistory: [],
-      expiredParkingHistory: [],
-    },
   ) {}
 }

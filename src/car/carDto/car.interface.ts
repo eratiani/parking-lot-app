@@ -13,4 +13,5 @@ export interface checkedInCar extends ICar {
 export interface checkedOutCar extends checkedInCar {
   checkOutTime: Date;
   fee: number;
+  parkingLotId: string;
 }

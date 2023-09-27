@@ -25,12 +25,41 @@ model User {
 }
 
 model Car {
-  carId     String   @id @default(uuid())
-  carModel  String
-  carNumber String
-  carType   String
-  userId    String  
-
-  user      User @relation("UserCars", fields: [userId], references: [id])
+  carId               String   @id @default(uuid())
+  carModel            String
+  carNumber           String
+  carType             String
+  userId              String  
+  carParkedId         String?
+  user                User @relation("UserCars", fields: [userId], references: [id])
+  carParked           CarParked? @relation("checkIn", fields: [carParkedId], references: [carParkedId])
 }
+
+
+model ParkingLot {
+  parkingId       String  @unique @id @default(uuid())
+  lotName         String  @unique
+  lotAddress      String  @unique
+  parkingPrice    Float
+  carParked       CarParked[] @relation("carsParked")
+  parkingHistory  ParkingHistory[] @relation("carsCheckedOut")
+}
+model CarParked {
+  carParkedId         String @id @default(uuid())
+  parkingId           String  @unique
+  checkInTime         DateTime
+  carId               String?
+  cars                Car[] @relation("checkIn")
+  parkingLot          ParkingLot @relation("carsParked", fields: [parkingId], references: [parkingId])
+}
+model ParkingHistory {
+  parkingHistoryId  String  @id @default(uuid())
+  parkingId    String
+  checkInTime  DateTime
+  checkOutTime DateTime
+  carId        String @unique
+  fee          Float
+  parkingLot      ParkingLot @relation("carsCheckedOut", fields: [parkingId], references: [parkingId])
+}
+
 

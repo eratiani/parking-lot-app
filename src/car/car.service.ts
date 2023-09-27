@@ -8,7 +8,7 @@ export class CarService {
   constructor(private readonly prisma: PrismaService) {}
 
   async addCar(userId: string, car: CreateCarDto) {
-    return await this.prisma.car.create({
+    const newCar = await this.prisma.car.create({
       data: {
         carModel: car.carModel,
         carNumber: car.carNumber,
@@ -16,6 +16,7 @@ export class CarService {
         userId: userId,
       },
     });
+    return newCar.carId;
   }
 
   async getCars(userId: string) {
