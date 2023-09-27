@@ -6,13 +6,16 @@ import { UserBalanceService } from './user-balance.service';
 export class UserBalanceController {
   constructor(public readonly userBalanceService: UserBalanceService) {}
   @Post(':id')
-  addBalance(@Param('id') id: string) {
-    this.userBalanceService.addBalance(id);
+  async addBalance(@Param('id') id: string) {
+    await this.userBalanceService.addBalance(id);
     return null;
   }
   @Patch(':id')
-  subtractFromBalance(@Param('id') id: string, @Query('fee') fee: number) {
-    this.userBalanceService.subtractFromBalance(id, fee);
+  async subtractFromBalance(
+    @Param('id') id: string,
+    @Query('fee') fee: number,
+  ) {
+    await this.userBalanceService.subtractFromBalance(id, fee);
     return null;
   }
 }

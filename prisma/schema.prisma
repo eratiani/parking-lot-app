@@ -10,18 +10,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 model Admin {
-  id    String   @id @default(uuid()) 
-  logIn  String 
-  password  String
-  email String   @unique
+  id                  String   @id @default(uuid()) 
+  logIn               String 
+  password            String
+  email               String   @unique
 }
 model User {
-  id    String   @id @default(uuid())
-  logIn    String
-  password String
-  email    String @unique
-
-  cars     Car[]    @relation("UserCars")
+  id                  String      @id @default(uuid())
+  logIn               String
+  password            String
+  email               String      @unique
+  balance             Balance?     @relation("userBalance")
+  cars                Car[]       @relation("UserCars")
 }
 
 model Car {
@@ -37,12 +37,12 @@ model Car {
 
 
 model ParkingLot {
-  parkingId       String  @unique @id @default(uuid())
-  lotName         String  @unique
-  lotAddress      String  @unique
-  parkingPrice    Float
-  carParked       CarParked[] @relation("carsParked")
-  parkingHistory  ParkingHistory[] @relation("carsCheckedOut")
+  parkingId           String  @unique @id @default(uuid())
+  lotName             String  @unique
+  lotAddress          String  @unique
+  parkingPrice        Float
+  carParked           CarParked[] @relation("carsParked")
+  parkingHistory      ParkingHistory[] @relation("carsCheckedOut")
 }
 model CarParked {
   carParkedId         String @id @default(uuid())
@@ -53,13 +53,17 @@ model CarParked {
   parkingLot          ParkingLot @relation("carsParked", fields: [parkingId], references: [parkingId])
 }
 model ParkingHistory {
-  parkingHistoryId  String  @id @default(uuid())
-  parkingId    String
-  checkInTime  DateTime
-  checkOutTime DateTime
-  carId        String @unique
-  fee          Float
-  parkingLot      ParkingLot @relation("carsCheckedOut", fields: [parkingId], references: [parkingId])
+  parkingHistoryId    String  @id @default(uuid())
+  parkingId           String
+  checkInTime         DateTime
+  checkOutTime        DateTime
+  carId               String @unique
+  fee                 Float
+  parkingLot          ParkingLot @relation("carsCheckedOut", fields: [parkingId], references: [parkingId])
 }
-
+model Balance {
+  balance             Float  @default(100)
+  userId              String @unique
+  user                User @relation("userBalance", fields: [userId], references: [id])
+}
 
