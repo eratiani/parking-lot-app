@@ -1,22 +1,26 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { LogInUserDto, RegisterUserDto } from 'src/user/userDto';
+import { Controller, Request, Post, UseGuards, Body } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { localAuthGuard } from './guards/local-auth.guard';
+import { RegisterUserDto } from 'src/user/userDto';
+import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
 export class AuthController {
-  @Post('register')
-  @HttpCode(201)
-  async register(@Body() body: RegisterUserDto) {
-    //  registration logic
-  }
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {}
+  @UseGuards(localAuthGuard)
   @Post('logIn')
-  @HttpCode(200)
-  async logIn(@Body() body: LogInUserDto) {
-    //  login  logic
+  async logIn(@Request() req) {
+    return await this.authService.logIn(req.user);
   }
-  //   @UseGuards(RefreshGuard)
-  //   @Post('refresh')
-  //   @HttpCode(200)
-  //   async refresh(@Body() refreshDto: RefreshDto) {
-
-  //   }
+  @Post('register')
+  async registerUser(@Body() user: RegisterUserDto) {
+    return await this.userService.registerUser(user);
+  }
+  @Post('refresh')
+  async refreshToken(@Request() req) {
+    return await this.authService.refreshToken(req.user);
+  }
 }

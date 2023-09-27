@@ -11,13 +11,13 @@ datasource db {
 }
 model Admin {
   id                  String   @id @default(uuid()) 
-  logIn               String 
+  logIn               String   @unique
   password            String
   email               String   @unique
 }
 model User {
   id                  String      @id @default(uuid())
-  logIn               String
+  logIn               String      @unique
   password            String
   email               String      @unique
   balance             Balance?     @relation("userBalance")

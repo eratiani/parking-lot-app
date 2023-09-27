@@ -9,6 +9,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { UserController } from 'src/user/user.controller';
 import { UserService } from 'src/user/user.service';
@@ -16,6 +17,7 @@ import { CarService } from './car.service';
 import { CreateCarDto, ICar } from './carDto';
 import { throwCustomError } from 'src/utility/custom.error';
 import { checkAllowedFields } from 'src/utility/allowed-fields.error';
+import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('user/:userId/cars')
 export class CarController extends UserController {
@@ -25,7 +27,7 @@ export class CarController extends UserController {
   ) {
     super(userService);
   }
-
+  @UseGuards(JwtGuard)
   @Post()
   async addCar(@Body() body: CreateCarDto, @Param('userId') userId: string) {
     throwCustomError(body, 'carModel', 'string');
@@ -38,6 +40,7 @@ export class CarController extends UserController {
       throw error;
     }
   }
+  @UseGuards(JwtGuard)
   @Get()
   async getCars(@Param('userId') userId: string) {
     try {
@@ -46,6 +49,7 @@ export class CarController extends UserController {
       throw error;
     }
   }
+  @UseGuards(JwtGuard)
   @Get(':carId')
   async getCar(@Param('carId') carId: string) {
     if (!carId || typeof carId !== 'string') {
@@ -57,6 +61,7 @@ export class CarController extends UserController {
       throw new HttpException('car does not exist', HttpStatus.NOT_FOUND);
     }
   }
+  @UseGuards(JwtGuard)
   @Patch(':carId')
   async updateCar(
     @Param('carId') carId: string,
@@ -77,6 +82,7 @@ export class CarController extends UserController {
     }
     return null;
   }
+  @UseGuards(JwtGuard)
   @Delete(':carId')
   async deleteCar(
     @Param('carId') carId: string,

@@ -9,11 +9,13 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { IUser, RegisterUserDto } from './userDto';
 import { UserService } from './user.service';
 import { throwCustomError } from 'src/utility/custom.error';
 import { checkAllowedFields } from 'src/utility/allowed-fields.error';
+import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -38,6 +40,7 @@ export class UserController {
   async getUsers() {
     return await this.userService.getUsers();
   }
+
   @Get(':id')
   async getUser(@Param('id') id: string) {
     if (!id || typeof id !== 'string') {
@@ -49,6 +52,7 @@ export class UserController {
       throw new HttpException('user does not exist', HttpStatus.NOT_FOUND);
     }
   }
+  @UseGuards(JwtGuard)
   @Patch(':id')
   async updateUser(@Param('id') id: string, @Body() body: RegisterUserDto) {
     throwCustomError(body, 'logIn', 'string');
@@ -73,6 +77,7 @@ export class UserController {
 
     return null;
   }
+  @UseGuards(JwtGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
     if (!id || typeof id !== 'string') {

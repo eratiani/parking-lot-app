@@ -4,7 +4,7 @@ export class LogInUserDto implements ILogInUser {
     public password: string,
   ) {}
 }
-interface ILogInUser {
+export interface ILogInUser {
   logIn: string;
   password: string;
 }
