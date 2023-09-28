@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
@@ -12,7 +13,17 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ParckedCarModule } from './parcked-car/parcked-car.module';
 
 @Module({
-  imports: [UserModule, AuthModule, AdminModule, CarModule, ParkingLotModule, UserBalanceModule, UserHistoryModule, PrismaModule, ParckedCarModule],
+  imports: [
+    UserModule,
+    AuthModule,
+    AdminModule,
+    CarModule,
+    ParkingLotModule,
+    UserBalanceModule,
+    UserHistoryModule,
+    PrismaModule,
+    ParckedCarModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

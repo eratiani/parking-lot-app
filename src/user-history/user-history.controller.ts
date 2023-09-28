@@ -1,23 +1,27 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { UserHistoryService } from './user-history.service';
-import { CheckidInCar, checkedOutCar } from 'src/car/carDto';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UserHistoryService } from './user-history.service';
 
 @Controller('user-history')
 export class UserHistoryController {
   constructor(public readonly userHistoryService: UserHistoryService) {}
-  // @Post()
-  // addHistory(@Body() body: CheckidInCar) {
-  //   this.userHistoryService.createHisory(body,price);
-  //   return body.userId;
-  // }
-  // @UseGuards(JwtGuard)
+
   @Get(':lotId/lot')
   async getHistory(@Param('lotId') lotId: string) {
-    return await this.userHistoryService.getHistoryByLot(lotId);
+    try {
+      return await this.userHistoryService.getHistoryByLot(lotId);
+    } catch (error) {
+      throw error;
+    }
   }
+  @UseGuards(JwtGuard)
   @Get(':userId/user')
   async getHistorybyUser(@Param('userId') userId: string) {
-    return await this.userHistoryService.getHistoryByUserId(userId);
+    try {
+      return await this.userHistoryService.getHistoryByUserId(userId);
+    } catch (error) {
+      throw error;
+    }
   }
 }

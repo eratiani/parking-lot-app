@@ -11,7 +11,8 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { IUser, RegisterUserDto } from './userDto';
+
+import { RegisterUserDto } from './userDto';
 import { UserService } from './user.service';
 import { throwCustomError } from 'src/utility/custom.error';
 import { checkAllowedFields } from 'src/utility/allowed-fields.error';

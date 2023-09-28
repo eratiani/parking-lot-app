@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateParckedCarDto } from './parcked-car.dto/parcked-car.dto';
 import { CheckidInCar } from 'src/car/carDto';
 import { ICarParked } from 'src/parking_lot/parking_lotDto';
 

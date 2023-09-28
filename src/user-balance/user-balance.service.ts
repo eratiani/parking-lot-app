@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { IUserBalance } from './user-balanceDto';
+
 import { CreateUserBalanceDto } from './user-balanceDto/create-user-balance.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 

@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+
 import { IcheckedOutCar } from './user-historyDto';
-import { CheckidInCar, checkedOutCar } from 'src/car/carDto';
+import { CheckidInCar } from 'src/car/carDto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -10,8 +11,6 @@ export class UserHistoryService {
     body: CheckidInCar,
     price: number,
   ): Promise<IcheckedOutCar> {
-    console.log(body);
-
     const checkoutTime = new Date();
     const fee =
       ((checkoutTime.getTime() - body.checkInTime.getTime()) /

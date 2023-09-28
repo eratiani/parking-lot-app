@@ -1,17 +1,9 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
-import { Prisma } from '@prisma/client';
-import { CreateParkingLotDto, Iparking } from './parking_lotDto';
-import {
-  ICar,
-  checkedInCar,
-  checkedOutCar,
-} from 'src/car/carDto/car.interface';
+
+import { CreateParkingLotDto } from './parking_lotDto';
+import { ICar } from 'src/car/carDto/car.interface';
 import { ParckedCarService } from 'src/parcked-car/parcked-car.service';
 import { UserBalanceService } from 'src/user-balance/user-balance.service';
 import { UserHistoryService } from 'src/user-history/user-history.service';

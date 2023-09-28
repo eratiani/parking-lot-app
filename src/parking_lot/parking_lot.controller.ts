@@ -9,8 +9,9 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+
 import { ParkingLotService } from './parking_lot.service';
-import { CreateParkingLotDto, Iparking } from './parking_lotDto';
+import { CreateParkingLotDto } from './parking_lotDto';
 import { throwCustomError } from 'src/utility/custom.error';
 import { checkAllowedFields } from 'src/utility/allowed-fields.error';
 import { ICar } from 'src/car/carDto';

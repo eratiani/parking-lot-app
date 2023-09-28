@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -11,6 +10,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+
 import { AdminService } from './admin.service';
 import { RegisterAdminDto, IAdmin } from './adminDto';
 import { throwCustomError } from 'src/utility/custom.error';
