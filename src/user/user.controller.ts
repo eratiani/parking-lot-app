@@ -21,6 +21,7 @@ import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 @Controller('user')
 export class UserController {
   constructor(public readonly userService: UserService) {}
+  @UseGuards(JwtGuard)
   @Post()
   async createUser(@Body() body: RegisterUserDto) {
     throwCustomError(body, 'logIn', 'string');
@@ -37,11 +38,12 @@ export class UserController {
       }
     }
   }
+  @UseGuards(JwtGuard)
   @Get()
   async getUsers() {
     return await this.userService.getUsers();
   }
-
+  @UseGuards(JwtGuard)
   @Get(':id')
   async getUser(@Param('id') id: string) {
     if (!id || typeof id !== 'string') {

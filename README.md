@@ -22,6 +22,12 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+register user on /auth/register user {
+"password":string,
+"login": string ,
+email:"string"
+}
+than
 log in to app using /auth/logIn user {
 "password":string,
 "username": string (email)
