@@ -48,15 +48,16 @@ model CarParked {
   carParkedId         String @id @unique @default(uuid())
   parkingId           String  
   checkInTime         DateTime
+  userId              String
   carId               String
   parkingLot          ParkingLot @relation("carsParked", fields: [parkingId], references: [parkingId])
 }
 model ParkingHistory {
-  parkingHistoryId    String  @id @default(uuid())
+  parkingHistoryId    String  @id @unique @default(uuid())
   parkingId           String
   checkInTime         DateTime
   checkOutTime        DateTime
-  carId               String @unique
+  carId               String 
   fee                 Float
   parkingLot          ParkingLot @relation("carsCheckedOut", fields: [parkingId], references: [parkingId])
 }

@@ -20,24 +20,6 @@ import { throwCustomError } from 'src/utility/custom.error';
 export class ParckedCarController {
   constructor(public readonly parckedCarService: ParckedCarService) {}
 
-  @Post(':lotId')
-  async checkIn(
-    @Param('lotId') lotid: string,
-    @Body() body: ICreateParckedCar,
-  ) {
-    try {
-      throwCustomError(body, 'carId', 'string');
-      checkAllowedFields(['carId'], body);
-      const carParckedId = await this.parckedCarService.checkIn(
-        lotid,
-        body.carId,
-      );
-      return { message: 'car parcked successfully', carParckedId };
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
-
   @Get(':lotid')
   async getParckedCarsByLot(@Param('lotid') lotid: string) {
     if (!lotid || typeof lotid !== 'string') {

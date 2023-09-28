@@ -7,11 +7,21 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { Prisma } from '@prisma/client';
 import { CreateParkingLotDto, Iparking } from './parking_lotDto';
-import { checkedInCar, checkedOutCar } from 'src/car/carDto/car.interface';
+import {
+  ICar,
+  checkedInCar,
+  checkedOutCar,
+} from 'src/car/carDto/car.interface';
+import { ParckedCarService } from 'src/parcked-car/parcked-car.service';
+import { UserBalanceService } from 'src/user-balance/user-balance.service';
 
 @Injectable()
 export class ParkingLotService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    public carParkedService: ParckedCarService,
+    public balanceServ: UserBalanceService,
+  ) {}
 
   async addParkingLot(
     parkingLot: CreateParkingLotDto,
@@ -32,7 +42,23 @@ export class ParkingLotService {
       throw error;
     }
   }
-
+  async checkIn(body: ICar, lotId: string) {
+    const lot = await this.getParkingLot(lotId);
+    return await this.carParkedService.checkIn(
+      lotId,
+      body.carId,
+      body.userId,
+      lot.parkingPrice,
+    );
+  }
+  async checkOut(carParckedId: string, price: number) {
+    const checkedOutCar =
+      await this.carParkedService.removeCarParked(carParckedId);
+    // const userHistory = await
+    // const fee = checkedOutCar.checkInTime
+    // await this.balanceServ.subtractFromBalance(checkedOutCar.userId,price*checkedOutCar.)
+    return checkedOutCar;
+  }
   async getParkingLots(): Promise<CreateParkingLotDto[]> {
     try {
       return await this.prisma.parkingLot.findMany({

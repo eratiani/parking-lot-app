@@ -7,11 +7,13 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ParkingLotService } from './parking_lot.service';
 import { CreateParkingLotDto, Iparking } from './parking_lotDto';
 import { throwCustomError } from 'src/utility/custom.error';
 import { checkAllowedFields } from 'src/utility/allowed-fields.error';
+import { ICar } from 'src/car/carDto';
 @Controller('parking-lot')
 export class ParkingLotController {
   constructor(public readonly parkingLotService: ParkingLotService) {}
@@ -29,7 +31,29 @@ export class ParkingLotController {
       throw new BadRequestException(error.message);
     }
   }
-
+  @Post(':lotId/checkIn')
+  async checkIn(@Body() Body: ICar, @Param('lotId') lotId: string) {
+    throwCustomError(Body, 'userId', 'string');
+    throwCustomError(Body, 'carId', 'string');
+    checkAllowedFields(['userId', 'carId'], Body);
+    /// must be unique add later
+    try {
+      return await this.parkingLotService.checkIn(Body, lotId);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+  @Post(':carParkedId/checkOut')
+  async checkOut(
+    @Param('carParkedId') carParkedId: string,
+    @Query('price') price: number,
+  ) {
+    try {
+      return await this.parkingLotService.checkOut(carParkedId, price);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
   @Get()
   async getParkingLots() {
     return await this.parkingLotService.getParkingLots();
