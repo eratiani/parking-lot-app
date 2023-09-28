@@ -14,6 +14,7 @@ import {
 } from 'src/car/carDto/car.interface';
 import { ParckedCarService } from 'src/parcked-car/parcked-car.service';
 import { UserBalanceService } from 'src/user-balance/user-balance.service';
+import { UserHistoryService } from 'src/user-history/user-history.service';
 
 @Injectable()
 export class ParkingLotService {
@@ -21,6 +22,7 @@ export class ParkingLotService {
     private readonly prisma: PrismaService,
     public carParkedService: ParckedCarService,
     public balanceServ: UserBalanceService,
+    public userHistoryService: UserHistoryService,
   ) {}
 
   async addParkingLot(
@@ -54,9 +56,12 @@ export class ParkingLotService {
   async checkOut(carParckedId: string, price: number) {
     const checkedOutCar =
       await this.carParkedService.removeCarParked(carParckedId);
-    // const userHistory = await
-    // const fee = checkedOutCar.checkInTime
-    // await this.balanceServ.subtractFromBalance(checkedOutCar.userId,price*checkedOutCar.)
+    const userHistory = await this.userHistoryService.createHisory(
+      checkedOutCar,
+      price,
+    );
+    const fee = userHistory.fee;
+    await this.balanceServ.subtractFromBalance(checkedOutCar.userId, fee);
     return checkedOutCar;
   }
   async getParkingLots(): Promise<CreateParkingLotDto[]> {

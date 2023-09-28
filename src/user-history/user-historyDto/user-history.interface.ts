@@ -1,8 +1,8 @@
-import { checkedOutCar } from 'src/car/carDto';
-
-export interface ICreateUserHistory {
-  history: checkedOutCar;
-}
-export interface IUserHistory extends ICreateUserHistory {
-  userId: string;
+export interface IcheckedOutCar {
+  parkingHistoryId: String;
+  parkingId: String;
+  checkInTime: Date;
+  checkOutTime: Date;
+  carId: String;
+  fee: number;
 }
