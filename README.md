@@ -8,16 +8,12 @@
 $ npm install
 ```
 
-log in to app using /auth/logIn user {
-"password":string,
-"username": string (email)
-}
-
 ## Running the app
 
 ```bash
 # development
 $ npm run start
+
 
 # watch mode
 $ npm run start:dev
@@ -25,6 +21,13 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+
+log in to app using /auth/logIn user {
+"password":string,
+"username": string (email)
+}
+recieve jwt token
+use token in request head to make further requests token authentication added on user actions only
 
 ## Test
 
@@ -42,13 +45,3 @@ $ npm run test:cov
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).

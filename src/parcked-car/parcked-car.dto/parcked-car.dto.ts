@@ -2,7 +2,7 @@ export class CreateParckedCarDto {
   constructor(
     public checkInTime: Date,
     public carId: string,
-    public carParkedId: String,
-    public parkingId: String,
+    public carParkedId: string,
+    public parkingId: string,
   ) {}
 }

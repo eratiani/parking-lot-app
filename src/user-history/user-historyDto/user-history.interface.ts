@@ -1,8 +1,8 @@
 export interface IcheckedOutCar {
-  parkingHistoryId: String;
-  parkingId: String;
+  parkingHistoryId: string;
+  parkingId: string;
   checkInTime: Date;
   checkOutTime: Date;
-  carId: String;
+  carId: string;
   fee: number;
 }
