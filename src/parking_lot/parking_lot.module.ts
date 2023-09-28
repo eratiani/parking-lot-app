@@ -8,5 +8,6 @@ import { UserHistoryModule } from 'src/user-history/user-history.module';
   providers: [ParkingLotService],
   controllers: [ParkingLotController],
   imports: [UserBalanceModule, UserHistoryModule],
+  exports: [ParkingLotService],
 })
 export class ParkingLotModule {}

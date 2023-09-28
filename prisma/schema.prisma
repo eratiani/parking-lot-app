@@ -30,9 +30,9 @@ model Car {
   carNumber           String
   carType             String
   userId              String  
-  carParkedId         String?
+  
   user                User @relation("UserCars", fields: [userId], references: [id])
-  carParked           CarParked? @relation("checkIn", fields: [carParkedId], references: [carParkedId])
+ 
 }
 
 
@@ -45,11 +45,10 @@ model ParkingLot {
   parkingHistory      ParkingHistory[] @relation("carsCheckedOut")
 }
 model CarParked {
-  carParkedId         String @id @default(uuid())
-  parkingId           String  @unique
+  carParkedId         String @id @unique @default(uuid())
+  parkingId           String  
   checkInTime         DateTime
-  carId               String?
-  cars                Car[] @relation("checkIn")
+  carId               String
   parkingLot          ParkingLot @relation("carsParked", fields: [parkingId], references: [parkingId])
 }
 model ParkingHistory {

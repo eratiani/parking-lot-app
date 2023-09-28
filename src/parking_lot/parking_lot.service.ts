@@ -13,7 +13,9 @@ import { checkedInCar, checkedOutCar } from 'src/car/carDto/car.interface';
 export class ParkingLotService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async addParkingLot(parkingLot: CreateParkingLotDto): Promise<string> {
+  async addParkingLot(
+    parkingLot: CreateParkingLotDto,
+  ): Promise<CreateParkingLotDto> {
     try {
       const parkingLotId: string = uuidv4();
       const newParkingLot = {
@@ -25,7 +27,7 @@ export class ParkingLotService {
         data: newParkingLot,
       });
 
-      return parkingLotId;
+      return newParkingLot;
     } catch (error) {
       throw error;
     }
